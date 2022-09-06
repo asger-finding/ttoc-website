@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 // import reportWebVitals from './reportWebVitals';
 import Tank from './components/Tank';
+import {
+  TANK_ICON_SIZES
+} from './types';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,9 +14,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <App />
-    <Tank playerId="1950197" size="large"/>
-    <Tank playerId="3162693" size="medium"/>
-    <Tank playerId="1145079" size="small"/>
+    <Tank playerId="1950197" size={TANK_ICON_SIZES.LARGE}/>
+    <Tank playerId="3162693" size={TANK_ICON_SIZES.MEDIUM}/>
+    <Tank playerId="1145079" size={TANK_ICON_SIZES.SMALL}/>
   </React.StrictMode>
 );
 
