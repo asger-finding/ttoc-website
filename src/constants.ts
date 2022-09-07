@@ -1,8 +1,12 @@
+export enum COLOUR_TYPES {
+	Numeric = 'numeric',
+	Image = 'image'
+}
 export interface Colour {
 	imageValue: string;
 	numericValue: string;
 	rawValue: string;
-	type: 'numeric' | 'image';
+	type: COLOUR_TYPES;
 }
 export interface PlayerDetails {
 	username: string;
@@ -84,3 +88,12 @@ export interface LoadImageOptions {
 	colour?: Colour;
 	size?: TANK_ICON_SIZES;
 }
+export type DrawTankPlayerDetails = Partial<PlayerDetails> & Required<Pick<PlayerDetails,
+	'backAccessory'
+	| 'treadColour'
+	| 'turretColour'
+	| 'baseColour'
+	| 'turretAccessory'
+	| 'frontAccessory'
+	| 'barrelAccessory'
+>>;

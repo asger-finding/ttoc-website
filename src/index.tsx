@@ -6,7 +6,7 @@ import App from './App';
 import Tank from './components/Tank';
 import {
   TANK_ICON_SIZES
-} from './types';
+} from './constants';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,6 +17,7 @@ root.render(
     <Tank playerId="1950197" size={TANK_ICON_SIZES.LARGE}/>
     <Tank playerId="3162693" size={TANK_ICON_SIZES.MEDIUM}/>
     <Tank playerId="1145079" size={TANK_ICON_SIZES.SMALL}/>
+    <Tank playerId="0" size={TANK_ICON_SIZES.LARGE}/>
   </React.StrictMode>
 );
 
