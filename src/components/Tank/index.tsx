@@ -22,7 +22,7 @@ const asyncImageLoad = (image: HTMLImageElement): Promise<HTMLImageElement> => {
 }
 
 const loadImage = async (tintedBuffer: HTMLCanvasElement, path: string, options: LoadImageOptions): Promise<HTMLImageElement> => {
-	const compositeImage = new Image();
+	const compositeImage = new Image(tintedBuffer.width, tintedBuffer.height);
 
 	if (options.type === TANK_ICON_IMAGE_TYPES.Accessory && parseInt(options.accessoryId ?? '0') === 0) return compositeImage;
 
@@ -40,7 +40,7 @@ const loadImage = async (tintedBuffer: HTMLCanvasElement, path: string, options:
 
 		switch (options.colour.type) {
 			case 'image':
-				const colourImage = new Image();
+				const colourImage = new Image(tintedBuffer.width, tintedBuffer.height);
 				colourImage.crossOrigin = 'anonymous';
 				colourImage.src = `${cdn}assets/images/colours/colour${options.colour.imageValue}-${TANK_ICON_RESOLUTIONS[options.size ?? TANK_ICON_SIZES.MEDIUM]}.png`;
 
