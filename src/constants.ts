@@ -1,4 +1,4 @@
-export enum COLOUR_TYPES {
+export enum PLAYER_DETAILS_COLOUR_TYPES {
 	Numeric = 'numeric',
 	Image = 'image'
 }
@@ -6,7 +6,7 @@ export interface Colour {
 	imageValue: string;
 	numericValue: string;
 	rawValue: string;
-	type: COLOUR_TYPES;
+	type: PLAYER_DETAILS_COLOUR_TYPES;
 }
 export interface PlayerDetails {
 	username: string;
@@ -55,28 +55,28 @@ export enum TANK_ICON_IMAGE_TYPES {
 	Image
 }
 export enum TANK_ICON_SIZES {
-	SMALL,
-	MEDIUM,
-	LARGE
+	Small,
+	Medium,
+	Large
 }
 export const TANK_ICON_RESOLUTIONS: Record<TANK_ICON_SIZES, number> = {
-	[TANK_ICON_SIZES.SMALL]: 140,
-	[TANK_ICON_SIZES.MEDIUM]: 200,
-	[TANK_ICON_SIZES.LARGE]: 320
+	[TANK_ICON_SIZES.Small]: 140,
+	[TANK_ICON_SIZES.Medium]: 200,
+	[TANK_ICON_SIZES.Large]: 320
 }
 export const TANK_ICON_CANVAS_SIZES: Record<TANK_ICON_SIZES, {
 	width: number;
 	height: number;
 }> = {
-	[TANK_ICON_SIZES.SMALL]: {
+	[TANK_ICON_SIZES.Small]: {
 		width: 140,
 		height: 84
 	},
-	[TANK_ICON_SIZES.MEDIUM]: {
+	[TANK_ICON_SIZES.Medium]: {
 		width: 200,
 		height: 120
 	},
-	[TANK_ICON_SIZES.LARGE]: {
+	[TANK_ICON_SIZES.Large]: {
 		width: 320,
 		height: 192
 	}
@@ -97,3 +97,19 @@ export type DrawTankPlayerDetails = Partial<PlayerDetails> & Required<Pick<Playe
 	| 'frontAccessory'
 	| 'barrelAccessory'
 >>;
+const TANK_UNAVAILABLE_COLOUR: Colour = {
+	imageValue: '',
+	numericValue: '0x888888',
+	rawValue: '0x888888',
+	type: PLAYER_DETAILS_COLOUR_TYPES.Numeric
+}
+export const fallbackDrawPlayerDetails: DrawTankPlayerDetails = {
+	barrelAccessory: '0',
+	backAccessory: '0',
+	frontAccessory: '0',
+	treadAccessory: '0',
+	turretAccessory: '0',
+	baseColour: TANK_UNAVAILABLE_COLOUR,
+	turretColour: TANK_UNAVAILABLE_COLOUR,
+	treadColour: TANK_UNAVAILABLE_COLOUR
+}

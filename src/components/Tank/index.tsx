@@ -3,7 +3,7 @@ import {
 	useEffect
 } from 'react'
 import {
-	COLOUR_TYPES,
+	PLAYER_DETAILS_COLOUR_TYPES,
 	TANK_ICON_SIZES,
 	TANK_ICON_RESOLUTIONS,
 	TANK_ICON_CANVAS_SIZES,
@@ -11,18 +11,18 @@ import {
 	PlayerDetails,
 	DrawTankPlayerDetails,
 	LoadImageOptions,
-	Colour
+	fallbackDrawPlayerDetails
 } from '../../constants';
 
 const proxyURL = 'https://ajax.tanktrouble-proxy.workers.dev/online';
 const cdn = 'https://cdn.tanktrouble.com/';
-const TANK_UNAVAILABLE_COLOUR: Colour = {
-	imageValue: '',
-	numericValue: '0x888888',
-	rawValue: '0x888888',
-	type: COLOUR_TYPES.Numeric
-}
 
+/**
+ * Create a promise for image load or erroring.
+ * 
+ * @param image Target image
+ * @returns A promise that resolves upon load or error
+ */
 const asyncImageLoad = (image: HTMLImageElement): Promise<HTMLImageElement> => {
 	return new Promise(resolve => {
 		image.addEventListener('load', () => resolve(image));
@@ -30,17 +30,34 @@ const asyncImageLoad = (image: HTMLImageElement): Promise<HTMLImageElement> => {
 	});
 }
 
-const cloneCanvas = (canvasToClone: HTMLCanvasElement) => {
-	const newCanvas = canvasToClone.cloneNode(false) as HTMLCanvasElement;
+/**
+ * Clone a canvas node and draw the image onto the clone.
+ * 
+ * @param targetCanvas Canvas element to clone
+ * @returns Cloned canvas node
+ */
+const cloneCanvas = (targetCanvas: HTMLCanvasElement) => {
+	// Clone the node without descendants
+	const newCanvas = targetCanvas.cloneNode(false) as HTMLCanvasElement;
 	const context = newCanvas.getContext('2d');
 
-	context?.drawImage(canvasToClone, 0, 0);
+	// Draw the image from the old canvas to the cloned one
+	context?.drawImage(targetCanvas, 0, 0);
 	return newCanvas;
 }
 
+/**
+ * Take in the parameters and return a promise for the image load. If specified, tint the image.
+ * 
+ * @param tintedBuffer Tint buffer for colour tinting
+ * @param path Path to the image to be loaded
+ * @param options Image type and optional data
+ * @returns 
+ */
 const loadImage = async (tintedBuffer: HTMLCanvasElement, path: string, options: LoadImageOptions): Promise<HTMLImageElement | HTMLCanvasElement> => {
 	const compositeImage = new Image(tintedBuffer.width, tintedBuffer.height);
 
+	// If the accessory id is 0, assume that nothing is equipped.
 	if (options.type === TANK_ICON_IMAGE_TYPES.Accessory && options.accessoryId === '0') return compositeImage;
 
 	compositeImage.crossOrigin = 'anonymous';
@@ -52,30 +69,31 @@ const loadImage = async (tintedBuffer: HTMLCanvasElement, path: string, options:
 		const tintedContext = tintedBuffer.getContext('2d');
 		if (!tintedContext) throw new Error('No tinted context');
 
-		// Clear the tinted canvas
-		tintedContext.clearRect(0, 0, tintedBuffer.width, tintedBuffer.height);
-
 		switch (options.colour.type) {
-			case COLOUR_TYPES.Numeric:
+			case PLAYER_DETAILS_COLOUR_TYPES.Numeric:
+				// Fill the canvas with the numeric colour value
 				tintedContext.globalCompositeOperation = 'copy';
 				tintedContext.fillStyle = '#' + options.colour.numericValue.replace('0x', '').padStart(6, '0');
 				tintedContext.fillRect(0, 0, tintedBuffer.width, tintedBuffer.height);
 
+				// Cut out the shape from the filled canvas
 				tintedContext.globalCompositeOperation = 'destination-atop';
 				tintedContext.drawImage(compositeImage, 0, 0);
 
 				return cloneCanvas(tintedBuffer);
 
-			case COLOUR_TYPES.Image:
+			case PLAYER_DETAILS_COLOUR_TYPES.Image:
 				const colourImage = new Image(tintedBuffer.width, tintedBuffer.height);
 				colourImage.crossOrigin = 'anonymous';
-				colourImage.src = `${cdn}assets/images/colours/colour${options.colour.imageValue}-${TANK_ICON_RESOLUTIONS[options.size ?? TANK_ICON_SIZES.MEDIUM]}.png`;
+				colourImage.src = `${cdn}assets/images/colours/colour${options.colour.imageValue}-${TANK_ICON_RESOLUTIONS[options.size ?? TANK_ICON_SIZES.Medium]}.png`;
 
 				await asyncImageLoad(colourImage);
 
+				// Clear the canvas and draw the shape upon the canvas
 				tintedContext.globalCompositeOperation = 'copy';
 				tintedContext.drawImage(compositeImage, 0, 0);
 
+				// Draw the image only onto where the canvas is filled
 				tintedContext.globalCompositeOperation = 'source-in';
 				tintedContext.drawImage(colourImage, 0, 0);
 
@@ -86,6 +104,13 @@ const loadImage = async (tintedBuffer: HTMLCanvasElement, path: string, options:
 	}
 }
 
+/**
+ * Render a tank upon the given canvas using image from TankTrouble.
+ * 
+ * @param playerDetails Relevant player details
+ * @param compositedBuffer The canvas element to draw upon
+ * @param size The tank canvas size
+ */
 const drawTank = async (playerDetails: DrawTankPlayerDetails, compositedBuffer: HTMLCanvasElement, size: TANK_ICON_SIZES) => {
 	const resolution = TANK_ICON_RESOLUTIONS[size];
 	const tintedBuffer = document.createElement('canvas');
@@ -211,14 +236,23 @@ const drawTank = async (playerDetails: DrawTankPlayerDetails, compositedBuffer: 
 		}
 	]
 
+	// Load all images in async
 	const images = await Promise.all(imagePromises.map(item => loadImage(tintedBuffer, item.path, item.options)));
 
+	// Draw the images onto the canvas context in order
 	const compositedContext = compositedBuffer.getContext('2d');
-	if (compositedContext)
-		for (const image of images) compositedContext.drawImage(image, 0, 0);
+	for (const image of images) compositedContext?.drawImage(image, 0, 0);
 }
 
-const TankCanvas = (props: { playerId: string; size: TANK_ICON_SIZES; }) => {
+/**
+ * Render a TankTrouble tank as a canvas.
+ * 
+ * @param props React properties
+ * @param props.playerId The target player id
+ * @param props.size The intended size
+ * @returns Active canvas that's being drawn.
+ */
+export default function TankCanvas(props: { playerId: string; size: TANK_ICON_SIZES; }) {
 	const canvasRef = useRef(null);
 
 	useEffect(() => {
@@ -241,16 +275,7 @@ const TankCanvas = (props: { playerId: string; size: TANK_ICON_SIZES; }) => {
 
 					drawTank(playerDetails, canvas, props.size)
 				} else {
-					drawTank({
-						barrelAccessory: '0',
-						backAccessory: '0',
-						frontAccessory: '0',
-						treadAccessory: '0',
-						turretAccessory: '0',
-						baseColour: TANK_UNAVAILABLE_COLOUR,
-						turretColour: TANK_UNAVAILABLE_COLOUR,
-						treadColour: TANK_UNAVAILABLE_COLOUR
-					}, canvas, props.size);
+					drawTank(fallbackDrawPlayerDetails, canvas, props.size);
 				}
 			}
 		}
@@ -260,5 +285,3 @@ const TankCanvas = (props: { playerId: string; size: TANK_ICON_SIZES; }) => {
 
 	return <canvas ref={canvasRef} />
 }
-
-export default TankCanvas;
