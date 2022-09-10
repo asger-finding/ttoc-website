@@ -256,7 +256,7 @@ const drawTank = async (playerDetails: DrawTankPlayerDetails, compositeBuffer: H
         outlineContext.fillStyle = 'rgba(0,0,0, 0.8)';
         outlineContext.fillRect(0, 0, compositeBuffer.width, compositeBuffer.height);
 
-		const outlineWidth = devicePixelRatio / 2;
+		const outlineWidth = devicePixelRatio;
         const outlineDiagWidth = Math.sqrt((outlineWidth ** 2) / 2.0);
 
 		compositeContext.globalCompositeOperation = 'destination-over';
