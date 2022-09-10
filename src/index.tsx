@@ -14,10 +14,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <App />
-    <Tank playerId="1950197" size={TANK_ICON_SIZES.Large}/>
-    <Tank playerId="3162693" size={TANK_ICON_SIZES.Medium}/>
-    <Tank playerId="1145079" size={TANK_ICON_SIZES.Small}/>
-    <Tank playerId="0" size={TANK_ICON_SIZES.Large}/>
+    <Tank playerId="1950197" outline="true" size={TANK_ICON_SIZES.Large}/>
+    <Tank playerId="3162693" outline="false" size={TANK_ICON_SIZES.Medium}/>
+    <Tank playerId="1145079" outline="true" size={TANK_ICON_SIZES.Small}/>
+    <Tank playerId="0" outline="true" size={TANK_ICON_SIZES.Large}/>
   </React.StrictMode>
 );
 

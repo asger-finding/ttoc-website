@@ -108,15 +108,15 @@ const loadImage = async (tintedBuffer: HTMLCanvasElement, path: string, options:
  * Render a tank upon the given canvas using image from TankTrouble.
  * 
  * @param playerDetails Relevant player details
- * @param compositedBuffer The canvas element to draw upon
+ * @param compositeBuffer The canvas element to draw upon
  * @param size The tank canvas size
  */
-const drawTank = async (playerDetails: DrawTankPlayerDetails, compositedBuffer: HTMLCanvasElement, size: TANK_ICON_SIZES) => {
+const drawTank = async (playerDetails: DrawTankPlayerDetails, compositeBuffer: HTMLCanvasElement, size: TANK_ICON_SIZES, shouldBeOutlined: boolean) => {
 	const resolution = TANK_ICON_RESOLUTIONS[size];
-	const tintedBuffer = document.createElement('canvas');
+	compositeBuffer.width = TANK_ICON_CANVAS_SIZES[size].width;
+	compositeBuffer.height = TANK_ICON_CANVAS_SIZES[size].height;
 
-	tintedBuffer.width = compositedBuffer.width = TANK_ICON_CANVAS_SIZES[size].width;
-	tintedBuffer.height = compositedBuffer.height = TANK_ICON_CANVAS_SIZES[size].height;
+	const tintedBuffer = compositeBuffer.cloneNode(false) as HTMLCanvasElement;
 
 	const imagePromises: Array<{ path: string; options: LoadImageOptions; }> = [
 		// Draw back accessory
@@ -237,11 +237,40 @@ const drawTank = async (playerDetails: DrawTankPlayerDetails, compositedBuffer: 
 	]
 
 	// Load all images in async
-	const images = await Promise.all(imagePromises.map(item => loadImage(tintedBuffer, item.path, item.options)));
+	const loadedImages = await Promise.all(imagePromises.map(item => loadImage(tintedBuffer, item.path, item.options)));
 
 	// Draw the images onto the canvas context in order
-	const compositedContext = compositedBuffer.getContext('2d');
-	for (const image of images) compositedContext?.drawImage(image, 0, 0);
+	const compositeContext = compositeBuffer.getContext('2d');
+	if (!compositeContext) throw new Error('No composite context');
+
+	for (const image of loadedImages) compositeContext.drawImage(image, 0, 0);
+
+	if (shouldBeOutlined) {
+		// Clone the composite buffer and get its context
+		const outlineBuffer = cloneCanvas(compositeBuffer);
+		const outlineContext = outlineBuffer.getContext('2d');
+		if (!outlineContext) throw new Error('No outline context');
+
+		// Darken the cloned content
+		outlineContext.globalCompositeOperation = 'source-in';
+        outlineContext.fillStyle = 'rgba(0,0,0, 0.8)';
+        outlineContext.fillRect(0, 0, compositeBuffer.width, compositeBuffer.height);
+
+		const outlineWidth = devicePixelRatio / 2;
+        const outlineDiagWidth = Math.sqrt((outlineWidth ** 2) / 2.0);
+
+		compositeContext.globalCompositeOperation = 'destination-over';
+
+		// Shift the outline and draw it eight times to the composite
+        compositeContext.drawImage(outlineBuffer, -outlineWidth, 0);
+        compositeContext.drawImage(outlineBuffer, -outlineDiagWidth, -outlineDiagWidth);
+        compositeContext.drawImage(outlineBuffer, -outlineDiagWidth, outlineDiagWidth);
+        compositeContext.drawImage(outlineBuffer, 0, outlineWidth);
+        compositeContext.drawImage(outlineBuffer, 0, -outlineWidth);
+        compositeContext.drawImage(outlineBuffer, outlineDiagWidth, -outlineDiagWidth);
+        compositeContext.drawImage(outlineBuffer, outlineDiagWidth, outlineDiagWidth);
+        compositeContext.drawImage(outlineBuffer, outlineWidth, 0);
+	}
 }
 
 /**
@@ -252,8 +281,9 @@ const drawTank = async (playerDetails: DrawTankPlayerDetails, compositedBuffer: 
  * @param props.size The intended size
  * @returns Active canvas that's being drawn.
  */
-export default function TankCanvas(props: { playerId: string; size: TANK_ICON_SIZES; }) {
+export default function TankCanvas(props: { playerId: string; size: TANK_ICON_SIZES; outline: 'true' | 'false'; }) {
 	const canvasRef = useRef(null);
+	const interpretedOutline = props.outline === 'true';
 
 	useEffect(() => {
 		async function draw() {
@@ -273,15 +303,15 @@ export default function TankCanvas(props: { playerId: string; size: TANK_ICON_SI
 					const playerDetails: PlayerDetails = result.result.data
 					context.fillText(playerDetails.username, 10, 50);
 
-					drawTank(playerDetails, canvas, props.size)
+					drawTank(playerDetails, canvas, props.size, interpretedOutline)
 				} else {
-					drawTank(fallbackDrawPlayerDetails, canvas, props.size);
+					drawTank(fallbackDrawPlayerDetails, canvas, props.size, interpretedOutline);
 				}
 			}
 		}
 
 		draw();
-	}, [props.playerId, props.size])
+	}, [props.playerId, props.size, interpretedOutline]);
 
 	return <canvas ref={canvasRef} />
 }
