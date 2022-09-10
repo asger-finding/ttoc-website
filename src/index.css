@@ -16,6 +16,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+a {
+  color: #3391ff;
+}
 
 .tank {
   display: flex;
@@ -67,13 +70,16 @@ code {
 }
 
 .Footer {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template: 'footerTanks footerNavigation';
   justify-content: space-between;
   padding-bottom: 20px;
+  background: #131516;
+  color: #ffffff;
 }
 .Footer-Tanks {
   display: grid;
+  justify-items: center;
   grid-template:
     'creator developer'
     'creatorTank developerTank';
@@ -83,8 +89,36 @@ code {
   text-align: center;
 }
 .Footer-Navigation {
-  margin: auto 50px;
+  margin: 30px 40px auto;
   text-align: center;
-  font-size: 18px;
   line-break: loose;
+}
+.Footer-Navigation a {
+  font-size: 24px;
+}
+@media only screen and (max-width: 1200px) {
+  .Footer {
+    justify-content: center;
+  }
+  .Footer-Tanks {
+    justify-content: center;
+    grid-template:
+      'creator'
+      'creatorTank'
+      'developer'
+      'developerTank'
+  }
+  .Footer-Tagline {
+    font-size: 24px;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .Footer {
+    grid-template:
+      'footerNavigation'
+      'footerTanks'
+  }
+  .Footer-Tagline {
+    display: none;
+  }
 }
