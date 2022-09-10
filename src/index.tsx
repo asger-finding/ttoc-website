@@ -3,10 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 // import reportWebVitals from './reportWebVitals';
-import Tank from './components/Tank';
-import {
-  TANK_ICON_SIZES
-} from './constants';
+import Footer from './components/Footer';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,10 +11,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <App />
-    <Tank playerId="1950197" outline="true" size={TANK_ICON_SIZES.Large}/>
-    <Tank playerId="3162693" outline="false" size={TANK_ICON_SIZES.Medium}/>
-    <Tank playerId="1145079" outline="true" size={TANK_ICON_SIZES.Small}/>
-    <Tank playerId="0" outline="true" size={TANK_ICON_SIZES.Large}/>
+    <Footer />
   </React.StrictMode>
 );
 

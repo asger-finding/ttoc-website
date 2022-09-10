@@ -64,6 +64,8 @@ export const TANK_ICON_RESOLUTIONS: Record<TANK_ICON_SIZES, number> = {
 	[TANK_ICON_SIZES.Medium]: 200,
 	[TANK_ICON_SIZES.Large]: 320
 }
+
+/** These values are also set in css  */
 export const TANK_ICON_CANVAS_SIZES: Record<TANK_ICON_SIZES, {
 	width: number;
 	height: number;

@@ -281,7 +281,12 @@ const drawTank = async (playerDetails: DrawTankPlayerDetails, compositeBuffer: H
  * @param props.size The intended size
  * @returns Active canvas that's being drawn.
  */
-export default function TankCanvas(props: { playerId: string; size: TANK_ICON_SIZES; outline: 'true' | 'false'; }) {
+export default function TankCanvas(props: {
+	children?: React.ReactNode|React.ReactNode[];
+	playerId: string;
+	size: TANK_ICON_SIZES;
+	outline: 'true' | 'false';
+}) {
 	const canvasRef = useRef(null);
 	const usernameRef = useRef(null);
 	const interpretedOutline = props.outline === 'true';
@@ -318,5 +323,6 @@ export default function TankCanvas(props: { playerId: string; size: TANK_ICON_SI
 	return <div className={`tank tank-${props.size}`}>
 		<canvas ref={canvasRef} />
 		<span ref={usernameRef}></span>
+		{props.children}
 	</div>
 }
