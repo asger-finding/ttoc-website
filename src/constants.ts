@@ -55,9 +55,9 @@ export enum TANK_ICON_IMAGE_TYPES {
 	Image
 }
 export enum TANK_ICON_SIZES {
-	Small,
-	Medium,
-	Large
+	Small = 'small',
+	Medium = 'medium',
+	Large = 'large'
 }
 export const TANK_ICON_RESOLUTIONS: Record<TANK_ICON_SIZES, number> = {
 	[TANK_ICON_SIZES.Small]: 140,
@@ -89,7 +89,8 @@ export interface LoadImageOptions {
 	size?: TANK_ICON_SIZES;
 }
 export type DrawTankPlayerDetails = Partial<PlayerDetails> & Required<Pick<PlayerDetails,
-	'backAccessory'
+	'username'
+	| 'backAccessory'
 	| 'treadColour'
 	| 'turretColour'
 	| 'baseColour'
@@ -104,6 +105,7 @@ const TANK_UNAVAILABLE_COLOUR: Colour = {
 	type: PLAYER_DETAILS_COLOUR_TYPES.Numeric
 }
 export const fallbackDrawPlayerDetails: DrawTankPlayerDetails = {
+	username: 'Scrapped',
 	barrelAccessory: '0',
 	backAccessory: '0',
 	frontAccessory: '0',

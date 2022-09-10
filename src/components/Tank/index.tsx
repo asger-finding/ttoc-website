@@ -283,35 +283,40 @@ const drawTank = async (playerDetails: DrawTankPlayerDetails, compositeBuffer: H
  */
 export default function TankCanvas(props: { playerId: string; size: TANK_ICON_SIZES; outline: 'true' | 'false'; }) {
 	const canvasRef = useRef(null);
+	const usernameRef = useRef(null);
 	const interpretedOutline = props.outline === 'true';
 
 	useEffect(() => {
 		async function draw() {
 			const canvas = canvasRef.current as unknown as HTMLCanvasElement;
-			const context = canvas.getContext('2d');
+			const username = usernameRef.current as unknown as HTMLSpanElement;
 
-			if (context) {
-				const result = await fetch(proxyURL, {
-					body: JSON.stringify({
-						method: 'tanktrouble.getPlayerDetails',
-						params: [props.playerId]
-					}),
-					method: 'POST'
-				}).then(response => response.json());
+			const result = await fetch(proxyURL, {
+				body: JSON.stringify({
+					method: 'tanktrouble.getPlayerDetails',
+					params: [props.playerId]
+				}),
+				method: 'POST'
+			}).then(response => response.json());
 
-				if (result.result.result) {
-					const playerDetails: PlayerDetails = result.result.data
-					context.fillText(playerDetails.username, 10, 50);
+			if (result.result.result) {
+				const playerDetails: PlayerDetails = result.result.data;
 
-					drawTank(playerDetails, canvas, props.size, interpretedOutline)
-				} else {
-					drawTank(fallbackDrawPlayerDetails, canvas, props.size, interpretedOutline);
-				}
+				drawTank(playerDetails, canvas, props.size, interpretedOutline);
+				username.setAttribute('username', playerDetails.username);
+				username.innerText = playerDetails.username;
+			} else {
+				drawTank(fallbackDrawPlayerDetails, canvas, props.size, interpretedOutline);
+				username.setAttribute('username', fallbackDrawPlayerDetails.username);
+				username.innerText = fallbackDrawPlayerDetails.username;
 			}
 		}
 
 		draw();
 	}, [props.playerId, props.size, interpretedOutline]);
 
-	return <canvas ref={canvasRef} />
+	return <div className={`tank tank-${props.size}`}>
+		<canvas ref={canvasRef} />
+		<span ref={usernameRef}></span>
+	</div>
 }
