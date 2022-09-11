@@ -135,6 +135,13 @@ a {
   }
 }
 @media only screen and (max-width: 800px) {
+  .Header {
+    grid-template:
+      'headerLogo'
+      'headerTitle'
+      'headerSubtitle';
+    justify-items: center;
+  }
   .Footer {
     grid-template:
       'footerNavigation'
