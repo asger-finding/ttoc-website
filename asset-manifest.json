@@ -1,14 +1,17 @@
 {
   "files": {
-    "main.css": "/ttoc-website/static/css/main.48deeab3.css",
-    "main.js": "/ttoc-website/static/js/main.3101da56.js",
+    "main.css": "/ttoc-website/static/css/main.58f40533.css",
+    "main.js": "/ttoc-website/static/js/main.56c56320.js",
+    "static/media/ttoc-header@4x.png": "/ttoc-website/static/media/ttoc-header@4x.8f005807879fa7763bbd.png",
+    "static/media/ttoc-header@2x.png": "/ttoc-website/static/media/ttoc-header@2x.85f92e2d1185660ca942.png",
+    "static/media/ttoc-header.png": "/ttoc-website/static/media/ttoc-header.3add7a0e59323e1eb238.png",
     "static/media/logo.svg": "/ttoc-website/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/ttoc-website/index.html",
-    "main.48deeab3.css.map": "/ttoc-website/static/css/main.48deeab3.css.map",
-    "main.3101da56.js.map": "/ttoc-website/static/js/main.3101da56.js.map"
+    "main.58f40533.css.map": "/ttoc-website/static/css/main.58f40533.css.map",
+    "main.56c56320.js.map": "/ttoc-website/static/js/main.56c56320.js.map"
   },
   "entrypoints": [
-    "static/css/main.48deeab3.css",
-    "static/js/main.3101da56.js"
+    "static/css/main.58f40533.css",
+    "static/js/main.56c56320.js"
   ]
 }
