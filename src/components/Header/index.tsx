@@ -3,8 +3,8 @@ export default function Header(props: {}) {
         <img
             className="Header-Logo"
             style={{ gridArea: 'headerLogo' }}
-            src={require('../../assets/ttoc-header.png')}
-            srcSet={`${require('../../assets/ttoc-header@2x.png')} 2x, ${require('../../assets/ttoc-header@4x.png')} 4x`}
+            src={process.env.PUBLIC_URL + '/header/ttoc-header.png'}
+            srcSet={`${ process.env.PUBLIC_URL }/header/ttoc-header@2x.png 2x, ${process.env.PUBLIC_URL}/header/ttoc-header@4x.png 4x`}
             width={250}
             height={250}
             alt="TTOC Header"
