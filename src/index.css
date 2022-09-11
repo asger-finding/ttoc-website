@@ -3,7 +3,13 @@
   src: url('https://tanktrouble.com/assets/fonts/TankTrouble.ttf');
 }
 
+:root {
+  --background-no-color: #131516;
+  --text-color: #ffffff;
+}
+
 body {
+  color: var(--text-color);
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -69,38 +75,54 @@ a {
   font-size: 24px;
 }
 
+.Header {
+  display: grid;
+  grid-template:
+    'headerLogo headerTitle'
+    'headerLogo headerSubtitle';
+  grid-template-columns: 240px auto;
+  text-align: center;
+  background-color: var(--background-no-color);
+}
+.Header .Header-Logo {
+  margin: 20px;
+}
+.Header .Header-Title {
+  align-self: end;
+}
+
 .Footer {
   display: grid;
   grid-template: 'footerTanks footerNavigation';
   justify-content: space-between;
   padding-bottom: 20px;
-  background: #131516;
-  color: #ffffff;
+  background: var(--background-no-color);
 }
-.Footer-Tanks {
+.Footer .Footer-Tanks {
   display: grid;
   justify-items: center;
   grid-template:
     'creator developer'
     'creatorTank developerTank';
 }
-.Footer-Tanks > p {
+.Footer .Footer-Tanks > p {
   font-size: 24px;
   text-align: center;
 }
-.Footer-Navigation {
+.Footer .Footer-Navigation {
   margin: 30px 40px auto;
   text-align: center;
   line-break: loose;
 }
-.Footer-Navigation a {
+.Footer .Footer-Navigation a {
   font-size: 24px;
 }
+
 @media only screen and (max-width: 1200px) {
   .Footer {
     justify-content: center;
   }
-  .Footer-Tanks {
+  .Footer .Footer-Tanks {
     justify-content: center;
     grid-template:
       'creator'
@@ -108,7 +130,7 @@ a {
       'developer'
       'developerTank'
   }
-  .Footer-Tagline {
+  .Footer .Footer-Tagline {
     font-size: 24px;
   }
 }
@@ -118,7 +140,7 @@ a {
       'footerNavigation'
       'footerTanks'
   }
-  .Footer-Tagline {
+  .Footer .Footer-Tagline {
     display: none;
   }
 }
